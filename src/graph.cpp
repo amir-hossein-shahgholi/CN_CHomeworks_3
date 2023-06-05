@@ -32,14 +32,28 @@ void Graph::add_edge(int v, int u, int weight)
 
 void Graph::delete_edge(int v, int u)
 {
+    if (edge_weights.count(make_pair(u, v)) == 0)
+    {
+        cout << "Edge does not exist" << endl;
+        return;
+    }
     edge_weights.erase(make_pair(u, v));
     edge_weights.erase(make_pair(v, u));
+    cout << "OK" << endl;
+    return;
 }
 
 void Graph::modify_edge(int v, int u, int cost)
 {
+    if (v == u)
+    {
+        cout << "Invalid nodes." << endl;
+        return;
+    }
     edge_weights[make_pair(v, u)] = cost;
     edge_weights[make_pair(u, v)] = cost;
+    cout << "OK" << endl;
+    return;
 }
 
 void Graph::show()
