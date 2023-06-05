@@ -2,6 +2,7 @@
 #define __NET_HPP__
 
 #include "graph.hpp"
+#include "utils.hpp"
 #include <string>
 #include <iostream>
 #include <sstream>

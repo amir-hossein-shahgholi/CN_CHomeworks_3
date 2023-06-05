@@ -44,6 +44,7 @@ void Graph::modify_edge(int v, int u, int cost)
 
 void Graph::show()
 {
+    cout << "   |";
     for (auto node : nodes)
     {
         int col = SPACE_OFFSET - digit_counter(node);
@@ -57,8 +58,10 @@ void Graph::show()
 
     for (auto v : nodes)
     {
-        for (int i = 0; i < SPACE_OFFSET - digit_counter(v); i++)
+        cout << v;
+        for (int i = 0; i < SPACE_OFFSET - digit_counter(v) - 1; i++)
             cout << " ";
+        cout << "|";
         for (auto u : nodes)
         {
             int w, col;
@@ -82,7 +85,7 @@ void Graph::show()
 
             for (int i = 0; i < col; i++)
                 cout << " ";
-            cout << w << "|";
+            cout << w;
         }
         cout << endl;
     }
@@ -90,12 +93,11 @@ void Graph::show()
 
 void Graph::link_state(int s)
 {
-    auto start = std::chrono::steady_clock::now();
-
     int n = nodes.size();
     vector<bool> mark(n + 1, false);
     vector<int> dist(n + 1, INF);
     vector<int> par(n + 1, -1);
+    auto start = std::chrono::steady_clock::now();
 
     for (auto v : nodes)
     {

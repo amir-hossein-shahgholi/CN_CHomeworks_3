@@ -1,5 +1,4 @@
 #include "../include/net.hpp"
-#include "../include/utils.hpp"
 
 void Net::run()
 {
@@ -13,9 +12,7 @@ void Net::run()
         getline(command_stream, command, ' ');
         getline(command_stream, args);
         if (command == "topology")
-        {
             graph = new Graph(args);
-        }
         else if (command == "modify")
         {
             arg_list = split(args, '-');
@@ -27,9 +24,7 @@ void Net::run()
             graph->delete_edge(stoi(arg_list[0]), stoi(arg_list[1]));
         }
         else if (command == "show")
-        {
             graph->show();
-        }
         else if (command == "lsrp")
         {
             arg_list = split(args, '-');
@@ -46,8 +41,6 @@ void Net::run()
             graph->bgp(stoi(args));
         }
         else
-        {
             cout << "Error: Unknown Command" << endl;
-        }
     }
 }
