@@ -57,6 +57,9 @@ remove 3-5
 
 ## Results
 before removing 4-10
+
 ![My Image](images/1.png)
+
 after removing 4-10
+
 ![My Image](images/2.png)
