@@ -26,20 +26,11 @@ void CommandHandler::run()
         else if (command == "show")
             graph->show();
         else if (command == "lsrp")
-        {
-            arg_list = split(args, '-');
             graph->link_state(stoi(args));
-        }
         else if (command == "dvrp")
-        {
-            arg_list = split(args, '-');
             graph->distance_vector(stoi(args));
-        }
         else if (command == "bgp")
-        {
-            arg_list = split(args, '-');
-            graph->bgp(stoi(args));
-        }
+            graph->bgp();
         else
             cout << "Error: Unknown Command" << endl;
     }

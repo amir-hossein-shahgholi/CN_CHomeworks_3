@@ -4,7 +4,7 @@ vector<string> split(string text, char delimeter)
 {
     vector<string> words;
     string temp = "";
-    for (int i = 0; i < text.size(); i++)
+    for (std::string::size_type i = 0; i < text.size(); i++)
     {
         if (text[i] == delimeter)
         {

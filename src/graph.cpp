@@ -1,12 +1,4 @@
 #include "../include/graph.hpp"
-#include "../include/utils.hpp"
-
-#include <iostream>
-#include <chrono>
-#include <sstream>
-#include <algorithm>
-
-using namespace std;
 
 Graph::Graph(string main_topology)
 {
@@ -108,40 +100,25 @@ void Graph::show()
 void Graph::link_state(int s)
 {
     int n = nodes.size();
-    vector<bool> mark(n + 1, false);
-    vector<int> dist(n + 1, INF);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    vector<int> distance(n + 1, INF);
     vector<int> par(n + 1, -1);
     auto start = std::chrono::steady_clock::now();
 
-    for (auto v : nodes)
-    {
-        if (edge_weights.find(make_pair(s, v)) != edge_weights.end())
-        {
-            dist[v] = edge_weights[make_pair(s, v)];
-            par[v] = s;
-        }
-        else
-            dist[v] = INF;
-    }
+    distance[s] = 0;
+    pq.push({0, s});
 
-    mark[s] = true;
-    dist[s] = 0;
-    int sz = 1;
-    while (sz < n)
+    int counter = 1;
+    while (!pq.empty())
     {
-        int mn = INF, v;
-        for (auto node : nodes)
-        {
-            if (mark[node])
-                continue;
-            if (dist[node] < mn)
-            {
-                mn = dist[node];
-                v = node;
-            }
-        }
+        int dist = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
 
-        cout << "   |Iter " + to_string(sz) << ":" << endl;
+        if (distance[u] != dist)
+            continue;
+
+        cout << "   |Iter " << counter << ":" << endl;
         cout << "Dest|";
         for (auto node : nodes)
         {
@@ -154,37 +131,38 @@ void Graph::link_state(int s)
         cout << "Cost|";
         for (auto node : nodes)
         {
-            int col = 4 - digit_counter(dist[node]);
-            if (dist[node] == INF)
+            int col = 4 - digit_counter(distance[node]);
+            if (distance[node] == INF)
                 col = 2;
             for (int i = 0; i < col; i++)
                 cout << " ";
-            cout << (dist[node] == INF ? -1 : dist[node]) << "|";
+            cout << (distance[node] == INF ? -1 : distance[node]) << "|";
         }
         cout << endl;
-        for (int i = 0; i < (nodes.size() + 1) * 5; i++)
+        for (std::string::size_type i = 0; i < (nodes.size() + 1) * 5; i++)
             cout << "-";
         cout << endl;
 
-        mark[v] = true;
-        sz += 1;
-        for (auto node : nodes)
+        counter++;
+
+        for (auto v : nodes)
         {
-            if (mark[node])
-                continue;
-            if (edge_weights.find(make_pair(v, node)) == edge_weights.end())
-                continue;
-            if (dist[v] + edge_weights[make_pair(v, node)] < dist[node])
+            if (edge_weights.find(make_pair(u, v)) != edge_weights.end())
             {
-                dist[node] = dist[v] + edge_weights[make_pair(v, node)];
-                par[node] = v;
+                int alt = distance[u] + edge_weights[make_pair(u, v)];
+                if (alt < distance[v])
+                {
+                    distance[v] = alt;
+                    par[v] = u;
+                    pq.push({distance[v], v});
+                }
             }
         }
     }
 
     string path;
     cout << "\nPath: [s] -> [d]         Min-Cost         Shortest Path" << endl;
-    cout << "---------------------------------------------------------" << endl;
+    cout << SEPARETOR << endl;
     for (auto node : nodes)
     {
         path = "";
@@ -194,8 +172,8 @@ void Graph::link_state(int s)
         int col = 15 - digit_counter(node);
         for (int i = 0; i < col; i++)
             cout << " ";
-        cout << dist[node];
-        col = 15 - digit_counter(dist[node]);
+        cout << distance[node];
+        col = 15 - digit_counter(distance[node]);
         for (int i = 0; i < col; i++)
             cout << " ";
         int p = node;
@@ -217,33 +195,33 @@ void Graph::distance_vector(int s)
     auto start = std::chrono::steady_clock::now();
 
     int n = nodes.size();
-    vector<bool> mark(n + 1, false);
-    vector<int> dist(n + 1, INF);
+    vector<bool> seen(n + 1, false);
+    vector<int> distance(n + 1, INF);
     vector<int> par(n + 1, -1);
 
-    dist[s] = 0;
+    distance[s] = 0;
 
-    while (1)
+    while (true)
     {
-        bool updated = false;
+        bool is_updated = false;
         for (map<pair<int, int>, int>::iterator it = edge_weights.begin(); it != edge_weights.end(); it++)
         {
             int v = it->first.first, u = it->first.second, w = it->second;
-            if (dist[v] + w < dist[u])
+            if (distance[v] + w < distance[u])
             {
-                dist[u] = dist[v] + w;
+                distance[u] = distance[v] + w;
                 par[u] = v;
-                updated = true;
+                is_updated = true;
             }
         }
-        if (!updated)
+        if (!is_updated)
             break;
     }
 
     string path;
     int prev_p;
     cout << "\nDest         NextHop         Dist         Shortest Path" << endl;
-    cout << "---------------------------------------------------------" << endl;
+    cout << SEPARETOR << endl;
     for (auto node : nodes)
     {
         path = "";
@@ -266,8 +244,8 @@ void Graph::distance_vector(int s)
         for (int i = 0; i < col; i++)
             cout << " ";
 
-        cout << dist[node];
-        col = 12 - digit_counter(dist[node]);
+        cout << distance[node];
+        col = 12 - digit_counter(distance[node]);
         for (int i = 0; i < col; i++)
             cout << " ";
 
@@ -279,6 +257,7 @@ void Graph::distance_vector(int s)
     cout << "Elapsed: " << elapsed_seconds << endl;
 }
 
-void Graph::bgp(int s)
+void Graph::bgp()
 {
+    cout << "Not implemented" << endl;
 }
