@@ -1,5 +1,5 @@
-#ifndef __NET_HPP__
-#define __NET_HPP__
+#ifndef __COMMANDHANDLER_HPP__
+#define __COMMANDHANDLER_HPP__
 
 #include "graph.hpp"
 #include "utils.hpp"
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Net
+class CommandHandler
 {
 private:
     Graph *graph;

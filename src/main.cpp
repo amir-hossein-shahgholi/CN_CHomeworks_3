@@ -1,7 +1,7 @@
-#include "../include/net.hpp"
+#include "../include/commandHandler.hpp"
 
 int main()
 {
-    Net network;
-    network.run();
+    CommandHandler command_handler;
+    command_handler.run();
 }

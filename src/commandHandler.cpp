@@ -1,6 +1,6 @@
-#include "../include/net.hpp"
+#include "../include/commandHandler.hpp"
 
-void Net::run()
+void CommandHandler::run()
 {
     string command, args;
     stringstream command_stream;
